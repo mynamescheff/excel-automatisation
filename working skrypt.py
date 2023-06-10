@@ -9,17 +9,23 @@ import pandas as pd
 from datetime import date
 from acc_checker import ExcelComparator
 
-SOURCE_DIR = ("C:\\IT project\\30.05")
+SOURCE_DIR = "C:\\IT project\\30.05"
 excel_files = list(Path(SOURCE_DIR).glob("*.xlsx"))
 
 values_excel_files = {}
 for excel_file in excel_files:
-    wb = load_workbook(filename = excel_file)
+    wb = load_workbook(filename=excel_file)
     extra_cell_1 = wb["Sheet 1"]["B19"]
     extra_cell_2 = wb["Sheet 1"]["C19"]
-    extra_cell_3 = wb["Sheet 1"]["C33"]
-    extra_cell_4 = wb["Sheet 1"]["C34"]
-    extra_cell_5 = wb["Sheet 1"]["C35"]
+    
+    if "AQA" in excel_file.name:
+        extra_cell_3 = wb["Sheet 1"]["C24"]
+        extra_cell_4 = wb["Sheet 1"]["C25"]
+        extra_cell_5 = wb["Sheet 1"]["C26"]
+    else:
+        extra_cell_3 = wb["Sheet 1"]["C33"]
+        extra_cell_4 = wb["Sheet 1"]["C34"]
+        extra_cell_5 = wb["Sheet 1"]["C35"]
     
     rng = wb["Sheet 1"]["B16":"B17"]
     rng_values = []
