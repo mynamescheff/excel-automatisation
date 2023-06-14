@@ -8,6 +8,7 @@ import os
 import pandas as pd
 from datetime import date
 from acc_checker import ExcelComparator
+from unidecode import unidecode
 
 SOURCE_DIR = "C:\\IT project\\30.05"
 excel_files = list(Path(SOURCE_DIR).glob("*.xlsx"))
@@ -34,7 +35,7 @@ for excel_file in excel_files:
             rng_values.append(cell.value)
 
     extra_cell_1_value = extra_cell_1.value
-    extra_cell_2_value = extra_cell_2.value
+    extra_cell_2_value = unidecode(str(extra_cell_2.value))  # Transform the value to SWIFT-accepted characters
     extra_cell_3_value = extra_cell_3.value
     extra_cell_4_value = extra_cell_4.value
     extra_cell_5_value = extra_cell_5.value
@@ -75,10 +76,11 @@ for i, excel_file in enumerate(values_excel_files):
     for j, value in enumerate(values_excel_files[excel_file]):
         # Check if the current value is from cell C34
         if j == len(values_excel_files[excel_file]) - 2:
-            # Check if value is not None before replacing spaces
-            if value is not None:
-                value = value.replace(" ", "")
+            # Check if value is not None and not an integer before replacing spaces
+            if value is not None and not isinstance(value, int):
+                value = str(value).replace(" ", "")
         ws[f"{column_letter}{j+2}"] = value
+
 
 wb.save("C:\\IT project\\test\\combined2.xlsx")
 
@@ -99,4 +101,3 @@ case_list.process_excel_files()
 
 comparator = ExcelComparator("C:\\IT project\\test\\combined2.xlsx", "C:\\IT project\\sprawdzacz.xlsx")
 comparator.compare_and_append()
-

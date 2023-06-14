@@ -11,8 +11,7 @@ class CaseList:
     def process_excel_files(self):
         list_file_path = os.path.join(self.list_folder, "list.txt")
 
-        duplicate_values = set()
-        existing_values = set()
+        existing_values = {}
 
         if os.path.isfile(list_file_path):
             # Read the existing values from the file
@@ -31,30 +30,32 @@ class CaseList:
 
                     if value in existing_values:
                         # Check if the value has been previously added
-                        duplicate_values.add(value)
+                        existing_values[value] = True
+                        self.unique_values[value] = file_name + " - DUPLICATE"
                     else:
-                        existing_values.add(value)
+                        existing_values[value] = False
                         self.unique_values[value] = file_name
 
                 except Exception as e:
                     print(f"Error processing file '{file_path}': {e}")
 
+        duplicate_values = [value for value, is_duplicate in existing_values.items() if is_duplicate]
         if duplicate_values:
             print(f"Alert: Duplicate values found - {duplicate_values}")
 
         if self.unique_values:
-            # Append the unique values to the list file with the current date and time
+            # Append the values to the list file with the current date and time
             today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            with open(list_file_path, "a") as file:
+            with open(list_file_path, "a", encoding="utf-8") as file:
                 file.write(f"\n--- Updated on {today} ---\n")
                 for value, file_name in self.unique_values.items():
                     file.write(f"{value} [{file_name}] ({today})\n")
 
     def load_existing_list(self, list_file_path):
-        existing_values = set()
+        existing_values = {}
 
         # Read the existing values from the file
-        with open(list_file_path, "r") as file:
+        with open(list_file_path, "r", encoding="utf-8") as file:
             lines = file.readlines()
 
         # Extract the values from the existing list
@@ -66,6 +67,6 @@ class CaseList:
             if line:
                 parts = line.split(" [")
                 value = parts[0]
-                existing_values.add(value)
+                existing_values[value] = False
 
         return existing_values

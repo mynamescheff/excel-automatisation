@@ -47,7 +47,7 @@ class ExcelComparator:
 
         # Append the non-matching values and filenames to "mismatch_list.txt"
         file_path = 'C:/IT project/mismatch/mismatch_list.txt'
-        with open(file_path, 'w') as file:
+        with open(file_path, 'w', encoding="utf-8") as file:
             current_date = date.today()
             for value, _ in zip(non_matching_values, filenames):
                 modified_value = value[0].replace("\xa0", "").strip()
