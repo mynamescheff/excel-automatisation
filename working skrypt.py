@@ -10,6 +10,45 @@ from datetime import date
 from acc_checker import ExcelComparator
 from unidecode import unidecode
 
+# Mapping dictionary for specific character replacements
+character_mapping = {
+    'á': 'a',
+    'à': 'a',
+    'â': 'a',
+    'ä': 'a',
+    'ã': 'a',
+    'å': 'a',
+    'æ': 'ae',
+    'ç': 'c',
+    'č': 'c',
+    'ć': 'c',
+    'é': 'e',
+    'è': 'e',
+    'ê': 'e',
+    'ë': 'e',
+    'í': 'i',
+    'ì': 'i',
+    'î': 'i',
+    'ï': 'i',
+    'ñ': 'n',
+    'ó': 'o',
+    'ò': 'o',
+    'ô': 'o',
+    'ö': 'o',
+    'õ': 'o',
+    'ø': 'o',
+    'œ': 'oe',
+    'š': 's',
+    'ú': 'u',
+    'ù': 'u',
+    'û': 'u',
+    'ü': 'u',
+    'ý': 'y',
+    'ÿ': 'y',
+    'ž': 'z'
+    # Add more mappings as needed
+}
+
 SOURCE_DIR = "C:\\IT project\\30.05"
 excel_files = list(Path(SOURCE_DIR).glob("*.xlsx"))
 
@@ -35,7 +74,9 @@ for excel_file in excel_files:
             rng_values.append(cell.value)
 
     extra_cell_1_value = extra_cell_1.value
-    extra_cell_2_value = unidecode(str(extra_cell_2.value))  # Transform the value to SWIFT-accepted characters
+    extra_cell_2_value = str(extra_cell_2.value)
+    for char, replacement in character_mapping.items():
+        extra_cell_2_value = extra_cell_2_value.replace(char, replacement)  # Replace specific characters
     extra_cell_3_value = extra_cell_3.value
     extra_cell_4_value = extra_cell_4.value
     extra_cell_5_value = extra_cell_5.value
