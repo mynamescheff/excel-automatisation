@@ -9,6 +9,7 @@ import pandas as pd
 from datetime import date
 from acc_checker import ExcelComparator
 from unidecode import unidecode
+from char_remap import transform_to_swift_accepted_characters
 
 # Mapping dictionary for specific character replacements
 character_mapping = {
@@ -67,22 +68,35 @@ for excel_file in excel_files:
         extra_cell_4 = wb["Sheet 1"]["C34"]
         extra_cell_5 = wb["Sheet 1"]["C35"]
     
-    rng = wb["Sheet 1"]["B16":"B17"]
-    rng_values = []
-    for cells in rng:
-        for cell in cells:
-            rng_values.append(cell.value)
+    rng_cell_1 = wb["Sheet 1"]["B16"]
+    rng_cell_2 = wb["Sheet 1"]["B17"]
+
+    rng_values = [
+        rng_cell_1.value,
+        rng_cell_2.value
+    ]
+
+    transformed_values = transform_to_swift_accepted_characters(rng_values)  # Transform the values to SWIFT-accepted characters using the separate function
 
     extra_cell_1_value = extra_cell_1.value
-    extra_cell_2_value = str(extra_cell_2.value)
-    for char, replacement in character_mapping.items():
-        extra_cell_2_value = extra_cell_2_value.replace(char, replacement)  # Replace specific characters
+    extra_cell_2_value = extra_cell_2.value
     extra_cell_3_value = extra_cell_3.value
     extra_cell_4_value = extra_cell_4.value
     extra_cell_5_value = extra_cell_5.value
+    transformed_rng_cell_1 = transformed_values[0]
+    transformed_rng_cell_2 = transformed_values[1]
 
     # Add concatenated values to values_excel_files
-    values_excel_files[excel_file.name] = rng_values + [extra_cell_1_value, extra_cell_2_value, extra_cell_3_value, extra_cell_4_value, extra_cell_5_value]
+    values_excel_files[excel_file.name] = [
+        transformed_rng_cell_1,
+        transformed_rng_cell_2,
+        extra_cell_1_value,
+        extra_cell_2_value,
+        extra_cell_3_value,
+        extra_cell_4_value,
+        extra_cell_5_value
+    ]
+
 
 workbook = Workbook()
 
