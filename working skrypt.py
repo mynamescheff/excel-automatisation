@@ -9,48 +9,31 @@ import pandas as pd
 from datetime import date
 from acc_checker import ExcelComparator
 from unidecode import unidecode
-from char_remap import transform_to_swift_accepted_characters
+from char_map import transform_to_swift_accepted_characters
+from charges_checker import check_file_conditions
 
-# Mapping dictionary for specific character replacements
-character_mapping = {
-    'á': 'a',
-    'à': 'a',
-    'â': 'a',
-    'ä': 'a',
-    'ã': 'a',
-    'å': 'a',
-    'æ': 'ae',
-    'ç': 'c',
-    'č': 'c',
-    'ć': 'c',
-    'é': 'e',
-    'è': 'e',
-    'ê': 'e',
-    'ë': 'e',
-    'í': 'i',
-    'ì': 'i',
-    'î': 'i',
-    'ï': 'i',
-    'ñ': 'n',
-    'ó': 'o',
-    'ò': 'o',
-    'ô': 'o',
-    'ö': 'o',
-    'õ': 'o',
-    'ø': 'o',
-    'œ': 'oe',
-    'š': 's',
-    'ú': 'u',
-    'ù': 'u',
-    'û': 'u',
-    'ü': 'u',
-    'ý': 'y',
-    'ÿ': 'y',
-    'ž': 'z'
-    # Add more mappings as needed
-}
+SOURCE_DIR = "C:\\IT project\\pmt_run"
+excel_files = list(Path(SOURCE_DIR).glob("*.xlsx"))
 
-SOURCE_DIR = "C:\\IT project\\30.05"
+mismatched_cases = []  # List to store cases where the condition isn't met
+
+for excel_file in excel_files:
+    wb = load_workbook(filename=excel_file)
+    cell_b20_value = wb["Sheet 1"]["B20"].value
+    cell_c20_value = wb["Sheet 1"]["C20"].value
+    is_condition_met, mismatched_values = check_file_conditions(excel_file.name, cell_b20_value, cell_c20_value)
+
+    if not is_condition_met:
+        # Append to mismatched_cases list
+        mismatched_cases.append((excel_file.name, mismatched_values))
+
+# Print the cases where the condition isn't met
+if mismatched_cases:
+    print("Cases with mismatched values in B20 and C20 cells:")
+    for case in mismatched_cases:
+        print(f"File: {case[0]}, Mismatched Values: {case[1]}")
+
+SOURCE_DIR = "C:\\IT project\\pmt_run"
 excel_files = list(Path(SOURCE_DIR).glob("*.xlsx"))
 
 values_excel_files = {}
@@ -71,12 +54,14 @@ for excel_file in excel_files:
     rng_cell_1 = wb["Sheet 1"]["B16"]
     rng_cell_2 = wb["Sheet 1"]["B17"]
 
+
     rng_values = [
         rng_cell_1.value,
         rng_cell_2.value
     ]
 
-    transformed_values = transform_to_swift_accepted_characters(rng_values)  # Transform the values to SWIFT-accepted characters using the separate function
+    # Transform the values to SWIFT-accepted characters using the separate function
+    transformed_values = transform_to_swift_accepted_characters(rng_values)  
 
     extra_cell_1_value = extra_cell_1.value
     extra_cell_2_value = extra_cell_2.value
@@ -96,7 +81,6 @@ for excel_file in excel_files:
         extra_cell_4_value,
         extra_cell_5_value
     ]
-
 
 workbook = Workbook()
 
@@ -148,7 +132,7 @@ wide = Wide(filename, "Transposed")
 wide.auto_adjust_column_width()
 
 
-excel_folder = "C:\\IT project\\30.05"
+excel_folder = "C:\\IT project\\pmt_run"
 list_folder = "C:\\IT project\\case_list"
 
 case_list = CaseList(excel_folder, list_folder)
