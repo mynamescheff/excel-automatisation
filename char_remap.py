@@ -74,8 +74,34 @@ character_mapping = {
     'Ü': 'U',
     'Ý': 'Y',
     'Ÿ': 'Y',
-    'Ž': 'Z'
-    # Add more mappings as needed
+    'Ž': 'Z',
+
+    # Additional non-standard characters
+    'æ': 'ae',
+    'Æ': 'AE',
+    'œ': 'oe',
+    'Œ': 'OE',
+    'ß': 'ss',
+    'Þ': 'th',
+    'þ': 'th',
+    'ð': 'dh',
+    'Đ': 'D',
+    'đ': 'd',
+    'ł': 'l',
+    'Ł': 'L',
+    'đ': 'd',
+    'Đ': 'D',
+    'ß': 'ss',
+    'Þ': 'th',
+    'þ': 'th',
+    'ð': 'dh',
+    'Æ': 'AE',
+    'œ': 'oe',
+    'ß': 'ss',
+    'Ø': 'O',
+    'ø': 'o',
+    'Å': 'A',
+    'å': 'a',
 }
 
 def transform_to_swift_accepted_characters(input_list):
